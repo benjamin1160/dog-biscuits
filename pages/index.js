@@ -2,6 +2,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Script from 'next/script';
 import Link from 'next/link';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+const Wheel = dynamic(() => import('react-custom-roulette').then(m => m.Wheel), { ssr: false });
 
 const FLAVORS = [
   {
@@ -34,7 +37,37 @@ const FLAVORS = [
   },
 ];
 
+const WHEEL_DATA = [
+  { option: 'FREE BAG!' },
+  { option: '10% OFF' },
+  { option: '10% OFF' },
+  { option: 'BUY ONE GET ONE' },
+  { option: '10% OFF' },
+];
+
 export default function Home() {
+  const [showPopup, setShowPopup] = useState(true);
+  const [mustSpin, setMustSpin] = useState(false);
+  const [prizeNumber, setPrizeNumber] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+
+  const spin = () => {
+    const newPrizeNumber = Math.floor(Math.random() * WHEEL_DATA.length);
+    setPrizeNumber(newPrizeNumber);
+    setMustSpin(true);
+  };
+
+  const handleStop = () => {
+    setMustSpin(false);
+    setShowForm(true);
+    const prize = WHEEL_DATA[prizeNumber].option;
+    if (prize === 'FREE BAG!') setCode('FREEBAG');
+    else if (prize === 'BUY ONE GET ONE') setCode('BOGO');
+    else setCode('10OFF');
+  };
+
   return (
     <div style={{
       maxWidth: 420,
@@ -43,6 +76,7 @@ export default function Home() {
       fontFamily: 'system-ui, sans-serif',
       background: '#fff',
       minHeight: '100vh',
+      paddingTop: 60,
       paddingBottom: 100
     }}>
       <Head>
@@ -52,6 +86,61 @@ export default function Home() {
           content="Oven-baked dog cookies. 4 top flavors. Free delivery in Estero, Bonita Springs, Fort Myers, Lehigh Acres, Cape Coral. Ships nationwide."
         />
       </Head>
+
+      {showPopup && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 20
+        }}>
+          <div style={{ background: '#fff', padding: 20, borderRadius: 12, textAlign: 'center', width: 300 }}>
+            <h3 style={{ margin: '0 0 12px 0' }}>Spin the Wheel!</h3>
+            <Wheel
+              mustStartSpinning={mustSpin}
+              prizeNumber={prizeNumber}
+              data={WHEEL_DATA}
+              backgroundColors={['#FFB347', '#FDE1A5']}
+              textColors={['#533b19']}
+              onStopSpinning={handleStop}
+            />
+            {!mustSpin && !showForm && (
+              <button onClick={spin} style={{ marginTop: 12, padding: '8px 16px', fontWeight: 700 }}>
+                Spin
+              </button>
+            )}
+            {showForm && (
+              <div style={{ marginTop: 14 }}>
+                <p style={{ margin: '0 0 8px 0' }}>You won: {WHEEL_DATA[prizeNumber].option}</p>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ padding: '6px', width: '100%', marginBottom: 8 }}
+                />
+                <button
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.alert('Your code: ' + code);
+                    }
+                    setShowPopup(false);
+                  }}
+                  style={{ padding: '8px 16px', fontWeight: 700, width: '100%' }}
+                >
+                  Get Code
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <h1 style={{
         fontSize: 24,
@@ -275,7 +364,7 @@ export default function Home() {
 
       <div style={{
         position: "fixed",
-        bottom: 0,
+        top: 0,
         left: 0,
         right: 0,
         background: "#ffb347",
@@ -284,7 +373,7 @@ export default function Home() {
         textAlign: "center",
         fontSize: 16,
         padding: "10px 0",
-        boxShadow: "0 -2px 8px #0001",
+        boxShadow: "0 2px 8px #0001",
         zIndex: 10,
         letterSpacing: '-0.2px'
       }}>

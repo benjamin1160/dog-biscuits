@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.14.1",
     "next": "15.3.4",
     "react": "^19.0.0",
+    "react-custom-roulette": "^1.4.1",
     "react-dom": "^19.0.0",
     "theme-ui": "^0.17.2"
   },
