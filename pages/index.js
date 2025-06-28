@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Script from 'next/script';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WheelDemo from './wheel-demo';
 
 const FLAVORS = [
@@ -38,6 +38,10 @@ const FLAVORS = [
 
 export default function Home() {
   const [showWheel, setShowWheel] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setShowWheel(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div style={{
       maxWidth: 420,
