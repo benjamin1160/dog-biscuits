@@ -1,87 +1,101 @@
 import Image from "next/image";
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function WheelDemo() {
-  const [rotation, setRotation] = useState(0); // total rotation in degrees
-  const [duration, setDuration] = useState(0); // animation duration in seconds
+  // Each prize takes up 45\u00b0 of the circle.
+  // Segment 8 ("20% Off") spans 315\u00b0–360\u00b0 with its center at 337.5\u00b0.
+  // To line this segment up with the pointer at 0\u00b0 we add a constant
+  // 22.5\u00b0 rotation (360\u00b0 - 337.5\u00b0).
+  const FINAL_OFFSET = 22.5;
+
+  const [rotation, setRotation] = useState(0); // current wheel angle
   const [spinning, setSpinning] = useState(false);
 
   const handleSpin = () => {
     if (spinning) return;
-    // Choose a random number of full rotations between 3 and 5
-    const spins = Math.floor(Math.random() * 3) + 3;
-    /*
-      Each segment spans 45°. The "20% Off" segment is the 8th (last) segment,
-      starting at 315°. Its center lies at 337.5°. To bring that center to the
-      12 o'clock position after spinning, we rotate the wheel by 22.5°
-      (360° - 337.5°) on the first spin.
-    */
-    const firstSpinOffset = rotation === 0 ? 22.5 : 0;
-    const newRotation = rotation + spins * 360 + firstSpinOffset;
-    const newDuration = 1 + spins; // e.g. 4s for 3 spins, 6s for 5 spins
 
-    setDuration(newDuration);
-    setRotation(newRotation);
+    const spins = Math.floor(Math.random() * 3) + 3; // 3–5 full turns
+
+    // Offset needed so the wheel always stops with segment 8 at the top.
+    const currentAngle = rotation % 360;
+    const neededOffset = FINAL_OFFSET - currentAngle;
+
+    setRotation(rotation + spins * 360 + neededOffset);
     setSpinning(true);
+  };
 
-    setTimeout(() => {
-      setSpinning(false);
-    }, newDuration * 1000 + 50);
+  const handleTransitionEnd = () => {
+    setSpinning(false);
   };
 
   const wheelSize = 320;
 
   return (
-    <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+    <div style={{ textAlign: "center", padding: "40px 20px" }}>
       <h1>Prize Wheel Demo</h1>
-      <div style={{ position: 'relative', width: wheelSize, height: wheelSize, margin: '40px auto' }}>
-        {/* Pointer indicating the winning segment */}
+      <div
+        style={{
+          position: "relative",
+          width: wheelSize,
+          height: wheelSize,
+          margin: "40px auto",
+        }}
+      >
+        {/* Pointer showing the winning position */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: -20,
-            left: '50%',
-            transform: 'translateX(-50%)',
+            left: "50%",
+            transform: "translateX(-50%)",
             width: 0,
             height: 0,
-            borderLeft: '16px solid transparent',
-            borderRight: '16px solid transparent',
-            borderBottom: '26px solid #f00',
+            borderLeft: "16px solid transparent",
+            borderRight: "16px solid transparent",
+            borderBottom: "26px solid #f00",
             zIndex: 2,
           }}
         />
-        {/* The wheel image */}
+
+        {/* Rotating wheel image */}
+        <div
+          onTransitionEnd={handleTransitionEnd}
+          style={{
+            width: "100%",
+            height: "100%",
+            transform: `rotate(${rotation}deg)`,
+            transition: spinning
+              ? "transform 4s cubic-bezier(0.33, 1, 0.68, 1)"
+              : "none",
+          }}
+        >
           <Image
             src="/wheel.png"
             alt="Prize Wheel"
             width={wheelSize}
             height={wheelSize}
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "block",
-              transform: `rotate(${rotation}deg)`,
-              transition: spinning ? `transform ${duration}s cubic-bezier(0.33, 1, 0.68, 1)` : "none",
-            }}
+            style={{ width: "100%", height: "100%" }}
           />
+        </div>
       </div>
       <button
         onClick={handleSpin}
         disabled={spinning}
         style={{
-          padding: '10px 20px',
+          padding: "10px 20px",
           fontSize: 16,
-          background: '#f9d648',
-          color: '#533b19',
+          background: "#f9d648",
+          color: "#533b19",
           fontWeight: 700,
-          border: 'none',
+          border: "none",
           borderRadius: 8,
-          cursor: spinning ? 'default' : 'pointer',
-          boxShadow: '0 2px 6px #0002',
+          cursor: spinning ? "default" : "pointer",
+          boxShadow: "0 2px 6px #0002",
         }}
       >
-        {spinning ? 'Spinning...' : 'Spin'}
+        {spinning ? "Spinning..." : "Spin"}
       </button>
     </div>
   );
 }
+
