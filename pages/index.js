@@ -4,8 +4,8 @@ import Script from 'next/script';
 
 const FLAVORS = [
   {
-    name: "Cheesy Beggin' Paws",
-    desc: "Cheesy dog cookies, baked fresh. Free local delivery in Estero & SWFL.",
+    name: "Cheesy Beggin&apos; Paws",
+    desc: "Cheesy dog cookies, baked fresh. Free local delivery in Estero &amp; SWFL.",
     image: '/cheesy-beggin-paws-bag.png',
     shopifyDivId: 'product-component-1751071570829',
     shopifyProductId: '9962631463193',
@@ -13,23 +13,23 @@ const FLAVORS = [
   {
     name: 'Peanut Butter',
     desc: "Our Southwest Florida classic. Dogs love these! Delivered in Bonita Springs, Fort Myers, and more.",
-    image: '/cheesy-beggin-paws-bag.png', // Placeholder image for now
+    image: '/cheesy-beggin-paws-bag.png',
     shopifyDivId: 'product-component-1751071570830',
-    shopifyProductId: '9962631463193',    // Replace with actual product IDs when you have them
+    shopifyProductId: '9962631463193',
   },
   {
     name: 'Pumpkin',
     desc: "Gentle pumpkin cookies—great for sensitive pups. Free delivery to Lehigh Acres, Cape Coral.",
-    image: '/cheesy-beggin-paws-bag.png', // Placeholder image for now
+    image: '/cheesy-beggin-paws-bag.png',
     shopifyDivId: 'product-component-1751071570831',
-    shopifyProductId: '9962631463193',    // Replace with actual product IDs when you have them
+    shopifyProductId: '9962631463193',
   },
   {
     name: 'Bacon',
     desc: "Smoky and savory. Our most popular treat—shipped nationwide, or delivered in all local cities.",
-    image: '/cheesy-beggin-paws-bag.png', // Placeholder image for now
+    image: '/cheesy-beggin-paws-bag.png',
     shopifyDivId: 'product-component-1751071570832',
-    shopifyProductId: '9962631463193',    // Replace with actual product IDs when you have them
+    shopifyProductId: '9962631463193',
   },
 ];
 
@@ -42,7 +42,7 @@ export default function Home() {
       fontFamily: 'system-ui, sans-serif',
       background: '#fff',
       minHeight: '100vh',
-      paddingBottom: 100 // Makes room for the sticky bar!
+      paddingBottom: 100
     }}>
       <Head>
         <title>Fresh Dog Cookies | Free Delivery in SWFL</title>
@@ -52,7 +52,6 @@ export default function Home() {
         />
       </Head>
 
-      {/* Headline */}
       <h1 style={{
         fontSize: 24,
         fontWeight: 800,
@@ -72,7 +71,6 @@ export default function Home() {
         Dogs love them. Yours will too.
       </p>
 
-      {/* Product blocks */}
       {FLAVORS.map(flavor => (
         <div key={flavor.name} style={{
           background: "#f7f6f4",
@@ -103,11 +101,9 @@ export default function Home() {
           }}>
             {flavor.desc}
           </p>
-          {/* Centered Shopify Add to Cart Button */}
           <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: 12 }}>
             <div id={flavor.shopifyDivId}></div>
           </div>
-          {/* Shopify Buy Button Script for each product */}
           <Script id={`shopify-buy-button-${flavor.shopifyDivId}`} strategy="afterInteractive">
             {`
               (function () {
@@ -196,7 +192,6 @@ export default function Home() {
         </div>
       ))}
 
-      {/* Trust/Guarantee and Review Section */}
       <div style={{
         background: "#f6f5f2",
         borderRadius: 14,
@@ -213,9 +208,8 @@ export default function Home() {
           100% Happiness Guarantee
         </p>
         <p style={{ color: "#655", fontSize: 15, margin: "0 0 12px 0" }}>
-          If your dog doesn't love them, we'll refund your order. No questions asked.
+          If your dog doesn&apos;t love them, we&apos;ll refund your order. No questions asked.
         </p>
-        {/* Placeholder for a real dog photo or video */}
         <div style={{
           width: 90,
           height: 90,
@@ -232,11 +226,10 @@ export default function Home() {
           Dog photo/video here
         </div>
         <p style={{ fontStyle: "italic", color: "#967746", fontSize: 14, margin: "8px 0" }}>
-          “Rosie can’t get enough of these! Delivery to Cape Coral was super fast.”<br />— Amanda, Cape Coral
+          &ldquo;Rosie can&apos;t get enough of these! Delivery to Cape Coral was super fast.&rdquo;<br />&mdash; Amanda, Cape Coral
         </p>
       </div>
 
-      {/* FAQ Section */}
       <div style={{
         background: "#f8f7f3",
         borderRadius: 14,
@@ -260,15 +253,13 @@ export default function Home() {
           <p style={{ margin: 0 }}>We operate in a state certified kitchen and use only 100% human-grade ingredients, ensuring quality and safety for your pet.</p>
         </div>
         <div>
-          <p style={{ fontWeight: 700, margin: "0 0 4px 0" }}>What's your refund policy?</p>
-          <p style={{ margin: 0 }}>If your dog doesn’t like our cookies, we provide a 100% money back guarantee—just tell us and your money will be sent back to your bank.</p>
+          <p style={{ fontWeight: 700, margin: "0 0 4px 0" }}>What&apos;s your refund policy?</p>
+          <p style={{ margin: 0 }}>If your dog doesn&apos;t like our cookies, we provide a 100% money back guarantee&mdash;just tell us and your money will be sent back to your bank.</p>
         </div>
       </div>
 
-      {/* Spacer for sticky bar */}
       <div style={{ height: 65 }}></div>
 
-      {/* Sticky Delivery Bar */}
       <div style={{
         position: "fixed",
         bottom: 0,
