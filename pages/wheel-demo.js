@@ -6,6 +6,8 @@ export default function WheelDemo() {
   const FINAL_OFFSET = 67.5; // lands on segment 6
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
+
+  // Use a single variable for the post-spin UI: showPrize, following your intent to highlight the win and form in a modal.
   const [showPrize, setShowPrize] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -17,14 +19,14 @@ export default function WheelDemo() {
     const neededOffset = FINAL_OFFSET - currentAngle;
     setRotation((prev) => prev + spins * 360 + neededOffset);
     setSpinning(true);
-    setShowPrize(false);
-    setSubmitted(false);
+    setShowPrize(false);  // Reset modal on spin
+    setSubmitted(false);  // Reset submission state on new spin
   };
 
   const handleTransitionEnd = () => {
     setSpinning(false);
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.4 } });
-    setShowPrize(true);
+    setShowPrize(true); // Show the modal after spin animation
   };
 
   const handleSubmit = async (e) => {
@@ -132,7 +134,11 @@ export default function WheelDemo() {
           ) : (
             <form
               onSubmit={handleSubmit}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
               <p style={{ fontWeight: 700, marginBottom: 10 }}>
                 You won 20% OFF total purchase!
@@ -144,12 +150,12 @@ export default function WheelDemo() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
-                  padding: "6px 10px",
+                  padding: "8px 12px",
                   fontSize: 15,
                   borderRadius: 6,
                   border: "1px solid #ccc",
                   marginBottom: 10,
-                  width: "100%",
+                  width: 220,
                 }}
               />
               <button
