@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import confetti from "canvas-confetti";
 
-export default function WheelDemo() {
+export default function WheelDemo({ onClose }) {
   const FINAL_OFFSET = 67.5; // lands on segment 6
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -37,6 +37,11 @@ export default function WheelDemo() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      if (typeof window !== "undefined") {
+        try {
+          window.localStorage.setItem("discountCode", "WHEEL20");
+        } catch {}
+      }
       setSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -130,7 +135,27 @@ export default function WheelDemo() {
           }}
         >
           {submitted ? (
-            <p style={{ fontWeight: 600 }}>Check your inbox for your coupon!</p>
+            <div>
+              <p style={{ fontWeight: 700, marginBottom: 12 }}>Thank you!</p>
+              <p style={{ fontSize: 15, marginBottom: 20 }}>
+                20% will be automatically applied at checkout.
+              </p>
+              <button
+                onClick={() => onClose && onClose()}
+                style={{
+                  padding: "10px 20px",
+                  background: "#2962ff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  fontSize: 16,
+                  fontWeight: 600,
+                }}
+              >
+                Continue Shopping
+              </button>
+            </div>
           ) : (
             <form
               onSubmit={handleSubmit}

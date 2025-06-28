@@ -143,6 +143,10 @@ export default function Home() {
                     storefrontAccessToken: '81dbad57acb16d54a41c11adc20f001d',
                   });
                   ShopifyBuy.UI.onReady(client).then(function (ui) {
+                    var discount = null;
+                    try {
+                      discount = window.localStorage.getItem('discountCode');
+                    } catch (e) {}
                     ui.createComponent('product', {
                       id: '${flavor.shopifyProductId}',
                       node: document.getElementById('${flavor.shopifyDivId}'),
@@ -197,6 +201,12 @@ export default function Home() {
                         "toggle": {}
                       },
                     });
+                    if (discount && ui.components.cart && ui.components.cart[0]) {
+                      var cartComp = ui.components.cart[0];
+                      var url = cartComp.model.checkoutUrl;
+                      url += (url.indexOf('?') === -1 ? '?' : '&') + 'discount=' + discount;
+                      cartComp.model.checkoutUrl = url;
+                    }
                   });
                 }
               })();
@@ -328,7 +338,7 @@ export default function Home() {
             >
               ×
             </button>
-            <WheelDemo />
+            <WheelDemo onClose={() => setShowWheel(false)} />
           </div>
         </div>
       )}
