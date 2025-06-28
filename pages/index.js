@@ -39,7 +39,7 @@ const FLAVORS = [
 export default function Home() {
   const [showWheel, setShowWheel] = useState(false);
   useEffect(() => {
-    const timer = setTimeout(() => setShowWheel(true), 3000);
+    const timer = setTimeout(() => setShowWheel(true), 2000);
     return () => clearTimeout(timer);
   }, []);
   return (
