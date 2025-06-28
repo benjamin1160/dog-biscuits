@@ -1,22 +1,44 @@
 import Image from "next/image";
 import { useState } from "react";
+import confetti from "canvas-confetti";
 
 export default function WheelDemo() {
   const FINAL_OFFSET = 22.5;
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSpin = () => {
     if (spinning) return;
-    const spins = Math.floor(Math.random() * 3) + 3; // 3–5 full turns
+    const spins = 4; // deterministic spins
     const currentAngle = rotation % 360;
     const neededOffset = FINAL_OFFSET - currentAngle;
     setRotation((prev) => prev + spins * 360 + neededOffset);
     setSpinning(true);
+    setShowForm(false);
+    setSubmitted(false);
   };
 
   const handleTransitionEnd = () => {
     setSpinning(false);
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.4 } });
+    setShowForm(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch("/api/submit-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const wheelSize = 320;
@@ -85,6 +107,47 @@ export default function WheelDemo() {
       >
         {spinning ? "Spinning..." : "Spin"}
       </button>
+
+      {showForm && (
+        <div style={{ marginTop: 24 }}>
+          {submitted ? (
+            <p style={{ fontWeight: 600 }}>Check your inbox for your coupon!</p>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <p style={{ fontWeight: 700, marginBottom: 10 }}>You won 20% off!</p>
+              <input
+                type="email"
+                required
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  padding: "8px 12px",
+                  fontSize: 15,
+                  borderRadius: 6,
+                  border: "1px solid #ccc",
+                  marginBottom: 10,
+                  width: 220,
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  padding: "8px 16px",
+                  background: "#2962ff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontSize: 15,
+                }}
+              >
+                Send Reward
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   );
 }
