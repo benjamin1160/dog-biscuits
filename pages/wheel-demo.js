@@ -38,6 +38,7 @@ export default function WheelDemo() {
         body: JSON.stringify({ email }),
       });
       setSubmitted(true);
+      setShowPrize(false); // close the modal after submitting
     } catch (err) {
       console.error(err);
     }
@@ -95,23 +96,25 @@ export default function WheelDemo() {
           />
         </div>
       </div>
-      <button
-        onClick={handleSpin}
-        disabled={spinning}
-        style={{
-          padding: "10px 20px",
-          fontSize: 16,
-          background: "#f9d648",
-          color: "#533b19",
-          fontWeight: 700,
-          border: "none",
-          borderRadius: 8,
-          cursor: spinning ? "default" : "pointer",
-          boxShadow: "0 2px 6px #0002",
-        }}
-      >
-        {spinning ? "Spinning..." : "Spin"}
-      </button>
+      {!showPrize && (
+        <button
+          onClick={handleSpin}
+          disabled={spinning}
+          style={{
+            padding: "10px 20px",
+            fontSize: 16,
+            background: "#f9d648",
+            color: "#533b19",
+            fontWeight: 700,
+            border: "none",
+            borderRadius: 8,
+            cursor: spinning ? "default" : "pointer",
+            boxShadow: "0 2px 6px #0002",
+          }}
+        >
+          {spinning ? "Spinning..." : "Spin"}
+        </button>
+      )}
 
       {showPrize && (
         <div
