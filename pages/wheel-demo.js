@@ -3,10 +3,10 @@ import { useState } from "react";
 import confetti from "canvas-confetti";
 
 export default function WheelDemo() {
-  const FINAL_OFFSET = 22.5;
+  const FINAL_OFFSET = 67.5; // lands on segment 6
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showPrize, setShowPrize] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -17,14 +17,14 @@ export default function WheelDemo() {
     const neededOffset = FINAL_OFFSET - currentAngle;
     setRotation((prev) => prev + spins * 360 + neededOffset);
     setSpinning(true);
-    setShowForm(false);
+    setShowPrize(false);
     setSubmitted(false);
   };
 
   const handleTransitionEnd = () => {
     setSpinning(false);
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.4 } });
-    setShowForm(true);
+    setShowPrize(true);
   };
 
   const handleSubmit = async (e) => {
@@ -65,8 +65,10 @@ export default function WheelDemo() {
             height: 0,
             borderLeft: "16px solid transparent",
             borderRight: "16px solid transparent",
-            borderBottom: "26px solid #f00",
+            borderTop: "26px solid #f00",
             zIndex: 2,
+            transition: "opacity 0.5s",
+            opacity: showPrize ? 0 : 1,
           }}
         />
         {/* Wheel container with rotation */}
@@ -76,8 +78,9 @@ export default function WheelDemo() {
             height: "100%",
             transition: spinning
               ? "transform 4s cubic-bezier(0.33, 1, 0.68, 1)"
-              : "none",
+              : "opacity 0.5s",
             transform: `rotate(${rotation}deg)`,
+            opacity: showPrize ? 0 : 1,
           }}
           onTransitionEnd={handleTransitionEnd}
         >
@@ -108,13 +111,32 @@ export default function WheelDemo() {
         {spinning ? "Spinning..." : "Spin"}
       </button>
 
-      {showForm && (
-        <div style={{ marginTop: 24 }}>
+      {showPrize && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "#fff",
+            padding: "20px 16px",
+            borderRadius: 8,
+            boxShadow: "0 2px 10px #0003",
+            width: 260,
+            textAlign: "center",
+            zIndex: 3,
+          }}
+        >
           {submitted ? (
             <p style={{ fontWeight: 600 }}>Check your inbox for your coupon!</p>
           ) : (
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <p style={{ fontWeight: 700, marginBottom: 10 }}>You won 20% off!</p>
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+            >
+              <p style={{ fontWeight: 700, marginBottom: 10 }}>
+                You won 20% OFF total purchase!
+              </p>
               <input
                 type="email"
                 required
@@ -122,12 +144,12 @@ export default function WheelDemo() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
-                  padding: "8px 12px",
+                  padding: "6px 10px",
                   fontSize: 15,
                   borderRadius: 6,
                   border: "1px solid #ccc",
                   marginBottom: 10,
-                  width: 220,
+                  width: "100%",
                 }}
               />
               <button
@@ -142,7 +164,7 @@ export default function WheelDemo() {
                   fontSize: 15,
                 }}
               >
-                Send Reward
+                Claim
               </button>
             </form>
           )}
