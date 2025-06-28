@@ -20,7 +20,8 @@ export default function WheelDemo() {
     const currentAngle = rotation % 360;
     const neededOffset = FINAL_OFFSET - currentAngle;
 
-    setRotation(rotation + spins * 360 + neededOffset);
+    // Update rotation based on the latest state value to avoid stale closures
+    setRotation((prev) => prev + spins * 360 + neededOffset);
     setSpinning(true);
   };
 
