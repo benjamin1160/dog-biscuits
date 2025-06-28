@@ -4,7 +4,7 @@ import Script from 'next/script';
 
 const FLAVORS = [
   {
-    name: "Cheezy Cookies",
+    name: 'Making Me Feel Cheezy',
     desc: "Cheesy dog cookies, baked fresh. Free local delivery in Estero &amp; SWFL.",
     image: '/cheesy-beggin-paws-bag.png',
     shopifyDivId: 'product-component-1751071570829',
