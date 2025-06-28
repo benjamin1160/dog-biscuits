@@ -2,6 +2,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Script from 'next/script';
 import Link from 'next/link';
+import { useState } from 'react';
+import WheelDemo from './wheel-demo';
 
 const FLAVORS = [
   {
@@ -35,6 +37,7 @@ const FLAVORS = [
 ];
 
 export default function Home() {
+  const [showWheel, setShowWheel] = useState(false);
   return (
     <div style={{
       maxWidth: 420,
@@ -290,6 +293,62 @@ export default function Home() {
       }}>
         🚚 Free Local Delivery: Estero, Bonita Springs, Fort Myers, Lehigh Acres, Cape Coral. Nationwide Shipping!
       </div>
+
+      {showWheel && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 20,
+          }}
+        >
+          <div style={{ position: "relative", background: "#fff", padding: 20, borderRadius: 12 }}>
+            <button
+              onClick={() => setShowWheel(false)}
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                background: "transparent",
+                border: "none",
+                fontSize: 22,
+                cursor: "pointer",
+              }}
+            >
+              ×
+            </button>
+            <WheelDemo />
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={() => setShowWheel(true)}
+        style={{
+          position: "fixed",
+          bottom: 80,
+          right: 20,
+          background: "#2962ff",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          padding: "12px 16px",
+          fontSize: 15,
+          fontWeight: 600,
+          cursor: "pointer",
+          boxShadow: "0 2px 6px #0003",
+          zIndex: 11,
+        }}
+      >
+        Spin the Wheel
+      </button>
     </div>
   );
 }
