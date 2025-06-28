@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Script from 'next/script';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 const FLAVORS = [
   {
@@ -34,7 +35,71 @@ const FLAVORS = [
   },
 ];
 
+const FIRST_PRIZES = [
+  { key: 'A', prize: '10% OFF', color: '#FFEA00' },
+  { key: 'B', prize: 'BOGO', color: '#FFC107' },
+  { key: '1MORE', prize: '1 MORE CHANCE', color: '#FF1744' },
+  { key: 'C', prize: '10% OFF', color: '#FFD54F' },
+];
+
+const SECOND_PRIZES = [
+  { key: 'BAD1', prize: '2% OFF', color: '#BDBDBD' },
+  { key: 'BEST', prize: 'FREE BAG!', color: '#FF1744' },
+  { key: 'BAD2', prize: '1% OFF', color: '#E0E0E0' },
+  { key: 'BAD3', prize: '0% OFF', color: '#BDBDBD' },
+];
+
 export default function Home() {
+  const [showPopup, setShowPopup] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [rotation, setRotation] = useState(0);
+  const [spinning, setSpinning] = useState(false);
+  const [autoSpin, setAutoSpin] = useState(true);
+  const [stage, setStage] = useState('first');
+
+  const prizes = stage === 'second' ? SECOND_PRIZES : FIRST_PRIZES;
+  const slice = 360 / prizes.length;
+  const gradient = `conic-gradient(${prizes.map((p, i) => `${p.color} ${i * slice}deg ${(i + 1) * slice}deg`).join(', ')})`;
+
+  useEffect(() => {
+    if (autoSpin) {
+      const id = setInterval(() => setRotation(r => r + 10), 20);
+      return () => clearInterval(id);
+    }
+  }, [autoSpin]);
+
+  const stopSpin = () => {
+    if (spinning) return;
+    setAutoSpin(false);
+    const index = stage === 'first'
+      ? prizes.findIndex(p => p.key === '1MORE')
+      : prizes.findIndex(p => p.key === 'BEST');
+    const target = rotation + 720 + (index * slice + slice / 2 - (rotation % 360));
+    setSpinning(true);
+    setRotation(target);
+    setTimeout(() => {
+      const prize = prizes[index];
+      setWinner(prize);
+      setSpinning(false);
+      if (stage === 'first') {
+        setStage('first-done');
+      } else {
+        setShowForm(true);
+        setCode(prize.key === 'BEST' ? 'FREEBAG' : 'BAD');
+      }
+    }, 4000);
+  };
+
+  const startSecond = () => {
+    setStage('second');
+    setAutoSpin(true);
+    setWinner(null);
+    setRotation(0);
+  };
+
   return (
     <div style={{
       maxWidth: 420,
@@ -43,6 +108,7 @@ export default function Home() {
       fontFamily: 'system-ui, sans-serif',
       background: '#fff',
       minHeight: '100vh',
+      paddingTop: 60,
       paddingBottom: 100
     }}>
       <Head>
@@ -51,7 +117,109 @@ export default function Home() {
           name="description"
           content="Oven-baked dog cookies. 4 top flavors. Free delivery in Estero, Bonita Springs, Fort Myers, Lehigh Acres, Cape Coral. Ships nationwide."
         />
+        <style>{`
+          @keyframes bounce {0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+        `}</style>
       </Head>
+
+      {showPopup && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 20
+        }}>
+          <div style={{ background: '#fff', padding: 20, borderRadius: 12, textAlign: 'center', width: 300 }}>
+            <h3 style={{ margin: '0 0 12px 0' }}>Spin the Wheel!</h3>
+            <div style={{ position: 'relative', width: 200, height: 200, margin: '0 auto' }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -10,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  fontSize: 24
+                }}
+              >
+                ▼
+              </div>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  border: '8px solid #ffb347',
+                  background: gradient,
+                  transform: `rotate(${rotation}deg)`,
+                  transition: spinning ? 'transform 4s ease-out' : 'none'
+                }}
+              >
+                {prizes.map((p, i) => (
+                  <div
+                    key={p.key}
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: `rotate(${i * slice + slice / 2}deg) translate(-50%, -85%) rotate(-${i * slice + slice / 2}deg)`,
+                      transformOrigin: 'center',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {p.prize}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {stage === 'first' && (
+              <button onClick={stopSpin} style={{ marginTop: 12, padding: '8px 16px', fontWeight: 700 }}>
+                Stop
+              </button>
+            )}
+            {stage === 'first-done' && (
+              <button onClick={startSecond} style={{ marginTop: 12, padding: '8px 16px', fontWeight: 700, animation: 'bounce 1s infinite' }}>
+                👉 Try your last chance
+              </button>
+            )}
+            {stage === 'second' && (
+              <button onClick={stopSpin} style={{ marginTop: 12, padding: '8px 16px', fontWeight: 700 }}>
+                Stop
+              </button>
+            )}
+            {showForm && (
+              <div style={{ marginTop: 14 }}>
+                <p style={{ margin: '0 0 8px 0' }}>You won: {winner.prize}</p>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ padding: '6px', width: '100%', marginBottom: 8 }}
+                />
+                <button
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.alert('Your code: ' + code);
+                    }
+                    setShowPopup(false);
+                  }}
+                  style={{ padding: '8px 16px', fontWeight: 700, width: '100%' }}
+                >
+                  Get Code
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <h1 style={{
         fontSize: 24,
@@ -275,7 +443,7 @@ export default function Home() {
 
       <div style={{
         position: "fixed",
-        bottom: 0,
+        top: 0,
         left: 0,
         right: 0,
         background: "#ffb347",
@@ -284,7 +452,7 @@ export default function Home() {
         textAlign: "center",
         fontSize: 16,
         padding: "10px 0",
-        boxShadow: "0 -2px 8px #0001",
+        boxShadow: "0 2px 8px #0001",
         zIndex: 10,
         letterSpacing: '-0.2px'
       }}>
