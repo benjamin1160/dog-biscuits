@@ -76,7 +76,7 @@ export default function Home() {
         margin: "0 0 18px 0",
         fontWeight: 500
       }}>
-        Dogs love them. Yours will too.
+        our dog will beg for another—or your money back.
       </p>
 
       <div style={{
@@ -333,26 +333,6 @@ export default function Home() {
         </div>
       )}
 
-      <button
-        onClick={() => setShowWheel(true)}
-        style={{
-          position: "fixed",
-          bottom: 80,
-          right: 20,
-          background: "#2962ff",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          padding: "12px 16px",
-          fontSize: 15,
-          fontWeight: 600,
-          cursor: "pointer",
-          boxShadow: "0 2px 6px #0003",
-          zIndex: 11,
-        }}
-      >
-        Spin the Wheel
-      </button>
     </div>
   );
 }
