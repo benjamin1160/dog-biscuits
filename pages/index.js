@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import Script from 'next/script';
+import Link from 'next/link';
 
 const FLAVORS = [
   {
@@ -59,7 +60,7 @@ export default function Home() {
         margin: "36px 0 14px 0",
         letterSpacing: '-0.5px'
       }}>
-        We Guarantee Your Dog Will Beg for More—Or Your Money Back!
+        Fresh Dog Cookies, Delivered Free in Southwest Florida
       </h1>
       <p style={{
         color: "#533b19",
@@ -265,6 +266,12 @@ export default function Home() {
       </div>
 
       <div style={{ height: 65 }}></div>
+
+      <p style={{ textAlign: 'center', marginBottom: 20 }}>
+        <Link href="/wholesale" style={{ color: '#2962ff', textDecoration: 'underline' }}>
+          Wholesale Inquiries
+        </Link>
+      </p>
 
       <div style={{
         position: "fixed",
