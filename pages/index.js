@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 const ShopifyBuyButton = dynamic(() => import('../components/ShopifyBuyButton'), { ssr: false });
 
 const WheelDemo = dynamic(() => import('./wheel-demo'), { ssr: false });
-const HelpModal = dynamic(() => import('../components/HelpModal'), { ssr: false });
+const HelpAssistant = dynamic(() => import('../components/HelpAssistant'), { ssr: false });
 
 const FLAVORS = [
   {
@@ -41,7 +41,6 @@ const FLAVORS = [
 
 export default function Home() {
   const [showWheel, setShowWheel] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [shopLoaded, setShopLoaded] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => setShowWheel(true), 2000);
@@ -230,24 +229,6 @@ export default function Home() {
         🚚 Free Local Delivery: Estero, Bonita Springs, Fort Myers, Lehigh Acres, Cape Coral. Nationwide Shipping!
       </div>
 
-      <button
-        onClick={() => setShowHelp(true)}
-        style={{
-          position: "fixed",
-          bottom: 80,
-          right: 20,
-          background: "#2962ff",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          padding: "10px 16px",
-          fontWeight: 600,
-          cursor: "pointer",
-          zIndex: 11,
-        }}
-      >
-        Help
-      </button>
 
       {showWheel && (
         <div
@@ -284,9 +265,7 @@ export default function Home() {
         </div>
       )}
 
-      {showHelp && (
-        <HelpModal onClose={() => setShowHelp(false)} />
-      )}
+      <HelpAssistant />
 
     </div>
   );
