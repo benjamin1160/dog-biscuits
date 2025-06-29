@@ -1,9 +1,11 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import Script from 'next/script';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import WheelDemo from './wheel-demo';
+import dynamic from 'next/dynamic';
+const ShopifyBuyButton = dynamic(() => import('../components/ShopifyBuyButton'), { ssr: false });
+
+const WheelDemo = dynamic(() => import('./wheel-demo'), { ssr: false });
 
 const FLAVORS = [
   {
@@ -38,6 +40,7 @@ const FLAVORS = [
 
 export default function Home() {
   const [showWheel, setShowWheel] = useState(false);
+  const [shopLoaded, setShopLoaded] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => setShowWheel(true), 2000);
     return () => clearTimeout(timer);
@@ -96,8 +99,8 @@ export default function Home() {
           <Image
             src={flavor.image}
             alt={`${flavor.name} Bag`}
-            width={140}
-            height={210}
+            width={180}
+            height={270}
             style={{ borderRadius: 12, marginBottom: 10, objectFit: "cover" }}
           />
           <h2 style={{
@@ -115,103 +118,20 @@ export default function Home() {
             {flavor.desc}
           </p>
           <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: 12 }}>
-            <div id={flavor.shopifyDivId}></div>
+            {shopLoaded ? (
+              <div id={flavor.shopifyDivId}></div>
+            ) : (
+              <button
+                onClick={() => setShopLoaded(true)}
+                style={{ background: '#2962ff', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 8 }}
+              >
+                Buy
+              </button>
+            )}
           </div>
-          <Script id={`shopify-buy-button-${flavor.shopifyDivId}`} strategy="afterInteractive">
-            {`
-              (function () {
-                var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-                if (window.ShopifyBuy) {
-                  if (window.ShopifyBuy.UI) {
-                    ShopifyBuyInit();
-                  } else {
-                    loadScript();
-                  }
-                } else {
-                  loadScript();
-                }
-                function loadScript() {
-                  var script = document.createElement('script');
-                  script.async = true;
-                  script.src = scriptURL;
-                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-                  script.onload = ShopifyBuyInit;
-                }
-                function ShopifyBuyInit() {
-                  var client = ShopifyBuy.buildClient({
-                    domain: 'a992c6.myshopify.com',
-                    storefrontAccessToken: '81dbad57acb16d54a41c11adc20f001d',
-                  });
-                  ShopifyBuy.UI.onReady(client).then(function (ui) {
-                    var discount = null;
-                    try {
-                      discount = window.localStorage.getItem('discountCode');
-                    } catch (e) {}
-                    ui.createComponent('product', {
-                      id: '${flavor.shopifyProductId}',
-                      node: document.getElementById('${flavor.shopifyDivId}'),
-                      moneyFormat: '%24%7B%7Bamount%7D%7D',
-                      options: {
-                        "product": {
-                          "styles": {
-                            "product": {
-                              "@media (min-width: 601px)": {
-                                "max-width": "calc(25% - 20px)",
-                                "margin-left": "20px",
-                                "margin-bottom": "50px"
-                              }
-                            }
-                          },
-                          "contents": {
-                            "img": false,
-                            "title": false,
-                            "price": false
-                          },
-                          "text": {
-                            "button": "Add to cart"
-                          }
-                        },
-                        "modalProduct": {
-                          "contents": {
-                            "img": false,
-                            "imgWithCarousel": true,
-                            "button": false,
-                            "buttonWithQuantity": true
-                          },
-                          "styles": {
-                            "product": {
-                              "@media (min-width: 601px)": {
-                                "max-width": "100%",
-                                "margin-left": "0px",
-                                "margin-bottom": "0px"
-                              }
-                            }
-                          },
-                          "text": {
-                            "button": "Add to cart"
-                          }
-                        },
-                        "cart": {
-                          "text": {
-                            "total": "Subtotal",
-                            "button": "Checkout"
-                          },
-                          "popup": false
-                        },
-                        "toggle": {}
-                      },
-                    });
-                    if (discount && ui.components.cart && ui.components.cart[0]) {
-                      var cartComp = ui.components.cart[0];
-                      var url = cartComp.model.checkoutUrl;
-                      url += (url.indexOf('?') === -1 ? '?' : '&') + 'discount=' + discount;
-                      cartComp.model.checkoutUrl = url;
-                    }
-                  });
-                }
-              })();
-            `}
-          </Script>
+          {shopLoaded && (
+            <ShopifyBuyButton productId={flavor.shopifyProductId} divId={flavor.shopifyDivId} />
+          )}
         </div>
         ))}
       </div>
