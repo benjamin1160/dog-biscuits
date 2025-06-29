@@ -6,6 +6,7 @@ export default function WheelDemo({ onClose }) {
   const FINAL_OFFSET = 67.5; // lands on segment 6
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [hasSpun, setHasSpun] = useState(false);
 
   // Use a single variable for the post-spin UI: showPrize, following your intent to highlight the win and form in a modal.
   const [showPrize, setShowPrize] = useState(false);
@@ -19,6 +20,7 @@ export default function WheelDemo({ onClose }) {
     const neededOffset = FINAL_OFFSET - currentAngle;
     setRotation((prev) => prev + spins * 360 + neededOffset);
     setSpinning(true);
+    setHasSpun(true);
     setShowPrize(false);  // Reset modal on spin
     setSubmitted(false);  // Reset submission state on new spin
   };
@@ -100,23 +102,25 @@ export default function WheelDemo({ onClose }) {
           />
         </div>
       </div>
-      <button
-        onClick={handleSpin}
-        disabled={spinning}
-        style={{
-          padding: "10px 20px",
-          fontSize: 16,
-          background: "#f9d648",
-          color: "#533b19",
-          fontWeight: 700,
-          border: "none",
-          borderRadius: 8,
-          cursor: spinning ? "default" : "pointer",
-          boxShadow: "0 2px 6px #0002",
-        }}
-      >
-        {spinning ? "Spinning..." : "Spin"}
-      </button>
+      {!hasSpun && (
+        <button
+          onClick={handleSpin}
+          disabled={spinning}
+          style={{
+            padding: "10px 20px",
+            fontSize: 16,
+            background: "#f9d648",
+            color: "#533b19",
+            fontWeight: 700,
+            border: "none",
+            borderRadius: 8,
+            cursor: spinning ? "default" : "pointer",
+            boxShadow: "0 2px 6px #0002",
+          }}
+        >
+          {spinning ? "Spinning..." : "Spin"}
+        </button>
+      )}
 
       {showPrize && (
         <div
