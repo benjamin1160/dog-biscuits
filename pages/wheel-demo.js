@@ -54,7 +54,7 @@ export default function WheelDemo({ onClose }) {
 
   return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <h1>Prize Wheel Demo</h1>
+      <h1>Spin to Win!</h1>
       <div
         style={{
           position: "relative",
