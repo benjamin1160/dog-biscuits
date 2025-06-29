@@ -25,9 +25,54 @@ export default function WheelDemo({ onClose }) {
     setSubmitted(false);  // Reset submission state on new spin
   };
 
+  const launchBalloons = () => {
+    if (typeof document === "undefined") return;
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.left = 0;
+    container.style.right = 0;
+    container.style.top = 0;
+    container.style.bottom = 0;
+    container.style.pointerEvents = "none";
+    container.style.zIndex = 4;
+    document.body.appendChild(container);
+
+    const style = document.createElement("style");
+    style.textContent = `@keyframes floatUp {from {transform: translateY(0);} to {transform: translateY(-120vh);} }`;
+    document.head.appendChild(style);
+
+    const count = 8;
+    for (let i = 0; i < count; i++) {
+      const b = document.createElement("span");
+      b.textContent = "\uD83C\uDF88"; // balloon emoji
+      b.style.position = "absolute";
+      b.style.bottom = "-40px";
+      b.style.left = Math.random() * 100 + "vw";
+      b.style.fontSize = "32px";
+      b.style.opacity = "0.9";
+      const duration = 3 + Math.random() * 1.5;
+      b.style.animation = `floatUp ${duration}s ease-in forwards`;
+      container.appendChild(b);
+      b.addEventListener("animationend", () => {
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { x: parseFloat(b.style.left) / window.innerWidth, y: 0 },
+        });
+        b.remove();
+      });
+    }
+
+    setTimeout(() => {
+      container.remove();
+      style.remove();
+    }, 5000);
+  };
+
   const handleTransitionEnd = () => {
     setSpinning(false);
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.4 } });
+    launchBalloons();
     setShowPrize(true); // Show the modal after spin animation
   };
 
