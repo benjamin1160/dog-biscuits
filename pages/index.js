@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 const ShopifyBuyButton = dynamic(() => import('../components/ShopifyBuyButton'), { ssr: false });
 
 const WheelDemo = dynamic(() => import('./wheel-demo'), { ssr: false });
+const HelpAssistant = dynamic(() => import('../components/HelpAssistant'), { ssr: false });
 
 const FLAVORS = [
   {
@@ -228,6 +229,7 @@ export default function Home() {
         🚚 Free Local Delivery: Estero, Bonita Springs, Fort Myers, Lehigh Acres, Cape Coral. Nationwide Shipping!
       </div>
 
+
       {showWheel && (
         <div
           style={{
@@ -262,6 +264,8 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <HelpAssistant />
 
     </div>
   );
