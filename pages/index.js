@@ -7,32 +7,34 @@ const ShopifyBuyButton = dynamic(() => import('../components/ShopifyBuyButton'),
 
 const WheelDemo = dynamic(() => import('./wheel-demo'), { ssr: false });
 
+const PRODUCT_IMAGE = 'https://storage.googleapis.com/msgsndr/DFIidVkcTbm3qcWsjDxE/media/691f37f55c5cab557011bd92.png';
+
 const FLAVORS = [
   {
     name: 'Making Me Feel Cheezy',
     desc: "Cheesy dog cookies, baked fresh. Free local delivery in Estero &amp; SWFL.",
-    image: '/cheesy-beggin-paws-bag.png',
+    image: PRODUCT_IMAGE,
     shopifyDivId: 'product-component-1751071570829',
     shopifyProductId: '9962631463193',
   },
   {
     name: 'Peanut Butter',
     desc: "Our Southwest Florida classic. Dogs love these! Delivered in Bonita Springs, Fort Myers, and more.",
-    image: '/cheesy-beggin-paws-bag.png',
+    image: PRODUCT_IMAGE,
     shopifyDivId: 'product-component-1751071570830',
     shopifyProductId: '9962631463193',
   },
   {
     name: 'Pumpkin',
     desc: "Gentle pumpkin cookies—great for sensitive pups. Free delivery to Lehigh Acres, Cape Coral.",
-    image: '/cheesy-beggin-paws-bag.png',
+    image: PRODUCT_IMAGE,
     shopifyDivId: 'product-component-1751071570831',
     shopifyProductId: '9962631463193',
   },
   {
     name: 'Bacon',
     desc: "Smoky and savory. Our most popular treat—shipped nationwide, or delivered in all local cities.",
-    image: '/cheesy-beggin-paws-bag.png',
+    image: PRODUCT_IMAGE,
     shopifyDivId: 'product-component-1751071570832',
     shopifyProductId: '9962631463193',
   },
