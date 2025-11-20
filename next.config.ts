@@ -4,6 +4,15 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        pathname: '/msgsndr/DFIidVkcTbm3qcWsjDxE/media/**',
+      },
+    ],
+  },
   async redirects() {
     return [
       {
